@@ -28,6 +28,9 @@ public class EmployeeRepository {
             return result.contentAs(Employee.class);
         } catch (DocumentNotFoundException dex) {
             System.out.println("Document Not Found");
+            Employee result = new Employee();
+            result.setType("NotFound");
+            return result;
         } catch (Exception ex)  {
             System.out.println("Suppressing all other employee get errors");
             ex.printStackTrace();
@@ -36,7 +39,7 @@ public class EmployeeRepository {
         return null;
     }
 
-    public void upsertEmployee(String scope, String id, Employee employee) {
+    public boolean upsertEmployee(String scope, String id, Employee employee) {
         Collection collection = connMgr.getCollection(scope+"-employee");
         try {
             JsonObject jo = JsonObject.fromJson(JsonUtils.toJsonString(employee));
@@ -44,17 +47,21 @@ public class EmployeeRepository {
         } catch (Exception ex) {
             System.out.println("Suppressing all employee upsert errors");
             ex.printStackTrace();
+            return false;
         }
+        return true;
     }
 
-    public void deleteEmployee(String scope, String id) {
+    public boolean deleteEmployee(String scope, String id) {
         Collection collection = connMgr.getCollection(scope+"-employee");
         try {
             collection.remove(id);
         } catch (Exception ex) {
             System.out.println("Suppressing all employee delete errors");
             ex.printStackTrace();
+            return false;
         }
+        return true;
     }
 
 }

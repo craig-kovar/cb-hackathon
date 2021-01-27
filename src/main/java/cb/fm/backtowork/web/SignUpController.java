@@ -76,6 +76,7 @@ public class SignUpController {
 
             //Create indexes
             CouchbaseUtils.createEmployeeOffice(orgName);
+            CouchbaseUtils.createEmployeeVaccination(orgName);
 
             jo.put("msg", "Greetings " + orgName);
             return ResponseEntity.status(201).body(jo.toString());

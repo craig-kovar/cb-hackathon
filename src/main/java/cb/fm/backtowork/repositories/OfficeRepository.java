@@ -28,6 +28,9 @@ public class OfficeRepository {
             return result.contentAs(Office.class);
         } catch (DocumentNotFoundException dex) {
             System.out.println("Document Not Found");
+            Office result = new Office();
+            result.setType("NotFound");
+            return result;
         } catch (Exception ex)  {
             System.out.println("Suppressing all other office get errors");
             ex.printStackTrace();
@@ -36,7 +39,7 @@ public class OfficeRepository {
         return null;
     }
 
-    public void upsertOffice(String scope, String id, Office office) {
+    public boolean upsertOffice(String scope, String id, Office office) {
         Collection collection = connMgr.getCollection(scope+"-office");
         try {
             JsonObject jo = JsonObject.fromJson(JsonUtils.toJsonString(office));
@@ -44,17 +47,23 @@ public class OfficeRepository {
         } catch (Exception ex) {
             System.out.println("Suppressing all office upsert errors");
             ex.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
-    public void deleteOffice(String scope, String id) {
+    public boolean deleteOffice(String scope, String id) {
         Collection collection = connMgr.getCollection(scope+"-office");
         try {
             collection.remove(id);
         } catch (Exception ex) {
             System.out.println("Suppressing all office delete errors");
             ex.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
 }

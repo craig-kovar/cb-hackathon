@@ -34,11 +34,41 @@ public class ManagementController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Employees per Office"),
             @ApiResponse(code = 400, message = "Failed to retrieve employees per office")
     })
+    @RequestMapping(value = "/employees/eligible", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementResultSet> eligibleEmployeesPerStores(@RequestParam String scope) {
+        return ResponseEntity.ok().body(managementServices.getEligibleEmployeesPerOffice(scope));
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Eligible Employees for all offices"),
+            @ApiResponse(code = 400, message = "Failed to retrieve eligible employees at all office")
+    })
     @RequestMapping(value = "/employees/{storeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ManagementResultSet> employeeAtStores(@RequestParam String scope, @PathVariable("storeId") String storeId) {
         return ResponseEntity.ok().body(managementServices.getNumEmployeesAtOffice(scope,storeId));
     }
 
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Eligible Employees at Office"),
+            @ApiResponse(code = 400, message = "Failed to retrieve eligible employees at office")
+    })
+    @RequestMapping(value = "/employees/eligible/{storeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementResultSet> elgibleEmployeeAtStores(@RequestParam String scope, @PathVariable("storeId") String storeId) {
+        return ResponseEntity.ok().body(managementServices.getNumEligibleEmployeesAtOffice(scope,storeId));
+    }
 
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Vaccinated Employees per Office"),
+            @ApiResponse(code = 400, message = "Failed to retrieve vaccinated employees per office")
+    })
+    @RequestMapping(value = "/employees/vaccinated", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementResultSet> vaccEmployeesPerStores(@RequestParam String scope, @RequestParam int numDoses) {
+        return ResponseEntity.ok().body(managementServices.getVaccinatedEmployeesPerOffice(scope,numDoses));
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Eligible Employees at Office"),
+            @ApiResponse(code = 400, message = "Failed to retrieve eligible employees at office")
+    })
+    @RequestMapping(value = "/employees/vaccinated/{storeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementResultSet> vaccEmployeeAtStores(@RequestParam String scope, @PathVariable("storeId") String storeId, @RequestParam int numDoses) {
+        return ResponseEntity.ok().body(managementServices.getVaccinatedEmployeesAtOffice(scope,storeId, numDoses));
+    }
 
 }

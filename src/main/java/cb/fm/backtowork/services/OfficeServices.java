@@ -17,12 +17,12 @@ public class OfficeServices {
         return officeRepository.getOfficeById(scope, id);
     }
 
-    public void upsertOffice(String scope, String id, Office office) {
-        officeRepository.upsertOffice(scope, id, office);
+    public boolean upsertOffice(String scope, String id, Office office) {
+        return officeRepository.upsertOffice(scope, id, office);
     }
 
-    public void deleteOffice(String scope, String id) {
-        officeRepository.deleteOffice(scope, id);
+    public boolean deleteOffice(String scope, String id) {
+        return officeRepository.deleteOffice(scope, id);
     }
 
 }

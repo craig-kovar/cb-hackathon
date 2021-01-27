@@ -18,19 +18,40 @@ public class Employee {
     @Getter @Setter private String type;
     @Getter @Setter private String ssn;
     @Getter @Setter private String firstName;
-    @Getter @Setter private boolean isPrimary;
+    private boolean isPrimary;
     @Getter @Setter private String relationship;
     @Getter @Setter private int age;
     @Getter @Setter private String lastName;
     @Getter @Setter private String emailId;
-    @Getter @Setter private String userName;
+    @Getter @Setter private String username;
     @Getter @Setter private String password;
     @Getter @Setter private Address address;
     @Getter @Setter private Geo geo;
     @Getter @Setter private String ethnicity;
     @Getter @Setter private String gender;
-    @Getter @Setter private Eligibility eligibility;
+    //@Getter @Setter private Eligibility eligibility;
+    private boolean isEligibleForVaccination;
+    @Getter @Setter private VaccinationDetail[] vaccinationDetails;
     @Getter @Setter private String officeLocId;
+    @Getter @Setter private String employeeId;
+    @Getter @Setter private String bloodGroup;
+    @Getter @Setter private String company;
+
+    public void setIsEligibleForVaccination(boolean isEligibleForVaccination) {
+        this.isEligibleForVaccination = isEligibleForVaccination;
+    }
+
+    public boolean getIsEligibleForVaccination() {
+        return this.isEligibleForVaccination;
+    }
+
+    public void setIsPrimary(boolean isPrimary) {
+        this.isPrimary = isPrimary;
+    }
+
+    public boolean getIsPrimary() {
+        return this.isPrimary;
+    }
 
 
     public Map<String,Object> toMap() {
@@ -60,8 +81,8 @@ public class Employee {
         if (emailId != null)
             retMap.put("emailId",emailId);
 
-        if (userName != null)
-            retMap.put("userName",userName);
+        if (username != null)
+            retMap.put("userName",username);
 
         if (password != null)
             retMap.put("password",password);
@@ -78,8 +99,18 @@ public class Employee {
         if (gender != null)
             retMap.put("gender",gender);
 
-        if (eligibility != null)
-            retMap.put("eligibility",eligibility);
+
+        retMap.put("isEligibleForVaccination",isEligibleForVaccination);
+
+        if (vaccinationDetails != null)
+            retMap.put("vaccinationDetails",vaccinationDetails);
+
+        if (company != null) {
+            retMap.put("company",company);
+        }
+
+        if (bloodGroup != null)
+            retMap.put("bloodGroup",bloodGroup);
 
         if (officeLocId != null)
             retMap.put("officeLocId", officeLocId);

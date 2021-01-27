@@ -31,7 +31,7 @@ public class AppConfig {
         return apiInfoBuilder.title("Back To Work")
                 .contact(new Contact("Fighting Mongoose LLC",null,null))
                 .description("Empowering your employee's to safely return to the office")
-                .version("1.0")
+                .version("1.1")
                 .build();
 
     }

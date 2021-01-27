@@ -15,12 +15,12 @@ public class EmployeeServices {
         return employeeRepository.getEmployeeById(scope, id);
     }
 
-    public void upsertEmployee(String scope, String id, Employee employee) {
-        employeeRepository.upsertEmployee(scope, id, employee);
+    public boolean upsertEmployee(String scope, String id, Employee employee) {
+        return employeeRepository.upsertEmployee(scope, id, employee);
     }
 
-    public void deleteEmployee(String scope, String id) {
-        employeeRepository.deleteEmployee(scope, id);
+    public boolean deleteEmployee(String scope, String id) {
+        return employeeRepository.deleteEmployee(scope, id);
     }
 
     public boolean isEligible(Employee employee) {

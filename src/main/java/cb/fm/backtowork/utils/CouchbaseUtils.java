@@ -105,7 +105,20 @@ public class CouchbaseUtils {
         Cluster cluster = connectionManager.getCluster();
         if (cluster != null) {
             String statement = String.format("create index %s on %s",scopeName+"EmplOffice", "BackToWork."+scopeName+".employee(officeLocId)");
-            System.out.println("Statement = " + statement);
+            //System.out.println("Statement = " + statement);
+            QueryResult result = cluster.query(statement);
+        }
+    }
+
+    public static void createEmployeeVaccination(String scopeName) {
+        //CREATE INDEX walmart_vaccinated ON BackToWork.Walmart.employee(ARRAY_LENGTH(vaccinationDetails))
+        //WHERE vaccinationDetails IS NOT MISSING
+        Cluster cluster = connectionManager.getCluster();
+        if (cluster != null) {
+            String statement = String.format("create index %s on %s", scopeName + "Vaccinations",
+                    "BackToWork." + scopeName + ".employee(ARRAY_LENGTH(vaccinationDetails)) "
+                            + "WHERE vaccinationDetails IS NOT MISSING");
+            //System.out.println("Statement = " + statement);
             QueryResult result = cluster.query(statement);
         }
     }
