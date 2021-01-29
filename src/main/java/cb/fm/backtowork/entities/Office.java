@@ -1,7 +1,6 @@
 package cb.fm.backtowork.entities;
 
-import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
@@ -12,7 +11,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Office {
 
     @Getter @Setter private String name;

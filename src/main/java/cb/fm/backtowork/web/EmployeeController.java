@@ -1,10 +1,12 @@
 package cb.fm.backtowork.web;
 
-import cb.fm.backtowork.entities.Employee;
-import cb.fm.backtowork.entities.Rule;
-import cb.fm.backtowork.entities.RuleSet;
+import cb.fm.backtowork.entities.*;
 import cb.fm.backtowork.services.EmployeeServices;
 import cb.fm.backtowork.services.RulesetService;
+import cb.fm.backtowork.services.VaccinationCentreService;
+import cb.fm.backtowork.utils.GeoUtil;
+import com.couchbase.client.java.search.result.SearchResult;
+import com.couchbase.client.java.search.result.SearchRow;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -13,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/employee")
 @Api(value = "Employee REST Endpoint", description = "Manage Employee information")
@@ -20,6 +25,9 @@ public class EmployeeController {
 
     @Autowired
     EmployeeServices employeeServices;
+
+    @Autowired
+    VaccinationCentreService vaccinationCentreService;
 
     @Autowired
     RulesetService rulesetService;
@@ -80,6 +88,94 @@ public class EmployeeController {
         }
 
         return false;
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully retrieved GeoCode"),
+            @ApiResponse(code = 400, message = "Failed to retrieve GeoCode")})
+    @RequestMapping(value = "/geocode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GeoResult> geoCodeZip(@RequestParam String zipCode) {
+        GeoResult result = GeoUtil.geoCodeZip(zipCode);
+        if (result != null) {
+            if (result.getLat().equals("0") && result.getLat().equals("0")) {
+                result.setMsg("Failed to retrieve GeoCode");
+                ResponseEntity.badRequest().body(result);
+            }
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully retrieved Vaccination Centers by Employee"),
+            @ApiResponse(code = 400, message = "Failed to retrieve Vaccination Centers by Employee")})
+    @RequestMapping(value = "/geo/employee", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<VaccinationCentre>> findVCByEmployee(@RequestParam String distance, @RequestBody Employee employee) {
+
+        SearchResult results = GeoUtil.doGeoSearchEmployee(employee, distance);
+
+        if (results != null) {
+            List<VaccinationCentre> centres = new ArrayList<>();
+            for (SearchRow row : results.rows()) {
+                centres.add(vaccinationCentreService.getVCById(row.id()));
+            }
+
+            return ResponseEntity.ok(centres);
+        }
+
+        return ResponseEntity.badRequest().body(null);
+
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully retrieved Vaccination Centers by Employee Id"),
+            @ApiResponse(code = 400, message = "Failed to retrieve Vaccination Centers by Employee Id")})
+    @RequestMapping(value = "/geo/id", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<VaccinationCentre>> findVCByEmployeeId(@RequestParam String distance, @RequestParam String scope, @RequestParam String id) {
+
+        Employee employee = employeeServices.getEmployeeById(scope, id);
+        if (employee != null) {
+            SearchResult results = GeoUtil.doGeoSearchEmployee(employee, distance);
+
+            if (results != null) {
+                List<VaccinationCentre> centres = new ArrayList<>();
+                for (SearchRow row : results.rows()) {
+                    centres.add(vaccinationCentreService.getVCById(row.id()));
+                }
+
+                return ResponseEntity.ok(centres);
+            }
+        }
+
+        return ResponseEntity.badRequest().body(null);
+
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully retrieved Vaccination Centers by zipcode"),
+            @ApiResponse(code = 400, message = "Failed to retrieve Vaccination Centers by zipcode")})
+    @RequestMapping(value = "/geo/zipcode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<VaccinationCentre>> findVCByZipCode(@RequestParam String distance, @RequestParam String zipCode) {
+
+        GeoResult geoResult = GeoUtil.geoCodeZip(zipCode);
+        if (geoResult.getMsg() == null) {
+
+            Employee employee = new Employee();
+            Geo tmpGeo = new Geo();
+            tmpGeo.setLat(Double.parseDouble(geoResult.getLat()));
+            tmpGeo.setLon(Double.parseDouble(geoResult.getLon()));
+            employee.setGeo(tmpGeo);
+
+            SearchResult results = GeoUtil.doGeoSearchEmployee(employee, distance);
+
+            if (results != null) {
+                List<VaccinationCentre> centres = new ArrayList<>();
+                for (SearchRow row : results.rows()) {
+                    centres.add(vaccinationCentreService.getVCById(row.id()));
+                }
+
+                return ResponseEntity.ok(centres);
+            }
+        }
+
+        return ResponseEntity.badRequest().body(null);
+
     }
 
 }

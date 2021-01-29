@@ -1,12 +1,13 @@
 package cb.fm.backtowork.entities;
 
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Address {
 
     @Getter @Setter private String zipCode;

@@ -1,8 +1,10 @@
 package cb.fm.backtowork.utils;
 
+import cb.fm.backtowork.entities.Employee;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.query.QueryResult;
+import com.couchbase.client.java.search.result.SearchResult;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import java.io.IOException;
