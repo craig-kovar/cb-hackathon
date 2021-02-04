@@ -71,4 +71,20 @@ public class ManagementController {
         return ResponseEntity.ok().body(managementServices.getVaccinatedEmployeesAtOffice(scope,storeId, numDoses));
     }
 
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Office Summary"),
+            @ApiResponse(code = 400, message = "Failed to retrieve office summary")
+    })
+    @RequestMapping(value = "/offices", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementResultSet> officesSummary(@RequestParam String scope) {
+        return ResponseEntity.ok().body(managementServices.getOfficesSummary(scope));
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Office Summary"),
+            @ApiResponse(code = 400, message = "Failed to retrieve office summary")
+    })
+    @RequestMapping(value = "/offices/{officeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementResultSet> officesSummary(@RequestParam String scope, @PathVariable("officeId") String officeId) {
+        return ResponseEntity.ok().body(managementServices.getOfficeSummary(scope,officeId));
+    }
+
 }

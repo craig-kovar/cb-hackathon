@@ -38,6 +38,13 @@ public class EmployeeController {
     private static final String okDelete = "{ \"msg\" : \"deleted employee successfully\" }";
     private static final String errDelete = "{ \"msg\" : \"failed to delete employee successfully\" }";
 
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Login status returned")})
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> login(@RequestParam String scope, @RequestParam String employeeId, @RequestParam String password) {
+       Boolean status = employeeServices.login(scope, employeeId, password);
+       return ResponseEntity.ok(status);
+    }
+
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Employee retrieved successfully"),
             @ApiResponse(code = 400, message = "Failed to retrieve employee")})
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,11 +90,25 @@ public class EmployeeController {
             String state = employee.getAddress().getState();
             if (state != null) {
                 RuleSet rulez = rulesetService.getRuleSet(state);
-                return rulesetService.processRules(rulez.getRulez(),employee);
+                if (rulez != null)
+                    return rulesetService.processRules(rulez.getRulez(),employee);
+                else
+                    return false;
             }
         }
 
         return false;
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Employee vaccination updated successfully"),
+            @ApiResponse(code = 400, message = "Failed to updated vaccination info")})
+    @RequestMapping(value = "/vc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> vcUpdate(@RequestParam String scope, @RequestParam String employeeId, @RequestParam String date) {
+       boolean status = employeeServices.updateVacStatus(scope, employeeId, date);
+       if (status)
+           return ResponseEntity.ok("{\"msg\": \"Vaccination Status updated succesfully\"}");
+
+       return ResponseEntity.badRequest().body("{\"msg\": \"Failed to update Vaccination Status\"}");
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully retrieved GeoCode"),

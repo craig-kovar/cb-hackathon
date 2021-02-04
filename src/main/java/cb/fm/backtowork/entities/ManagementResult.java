@@ -12,5 +12,7 @@ public class ManagementResult {
 
     @Getter @Setter private int employees;
     @Getter @Setter private String officeLocId;
+    @Getter @Setter private int eligibleEmployees;
+    @Getter @Setter private int vaccinatedEmployees;
 
 }

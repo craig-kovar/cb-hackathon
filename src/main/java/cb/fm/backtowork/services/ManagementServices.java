@@ -166,4 +166,71 @@ public class ManagementServices {
 
         return null;
     }
+
+    /*select officeLocId,
+    SUM(CASE WHEN a.isEligibleForVaccination = true THEN 1 ELSE 0 END) eligble,
+    SUM(CASE WHEN ARRAY_LENGTH(a.vaccinationDetails) >= 1 THEN 1 ELSE 0 END) vaccination,
+    COUNT(*) as employees
+    FROM BackToWork.Walmart.employee a
+    WHERE officeLocId is not missing
+    GROUP BY officeLocId*/
+    public ManagementResultSet getOfficesSummary(String scopeName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select officeLocId as officeLocId,\n");
+        sb.append("SUM(CASE WHEN a.isEligibleForVaccination = true THEN 1 ELSE 0 END) eligibleEmployees,\n");
+        sb.append("SUM(CASE WHEN ARRAY_LENGTH(a.vaccinationDetails) >= 1 THEN 1 ELSE 0 END) vaccinatedEmployees,\n");
+        sb.append("COUNT(*) as employees\n");
+        sb.append("FROM BackToWork.").append(scopeName).append(".employee a\n");
+        sb.append("WHERE officeLocId is not missing\n");
+        sb.append("GROUP BY officeLocId");
+
+        Cluster cluster = connMgr.getCluster();
+        if (cluster != null) {
+            QueryResult result = cluster.query(sb.toString());
+
+            List<ManagementResult> resultList = new ArrayList<>();
+            for (ManagementResult row : result.rowsAs(ManagementResult.class)) {
+                //System.out.println("Result = " + row.getOfficeLocId() + " " + row.getEmployees());
+                resultList.add(row);
+            }
+
+            ManagementResultSet results = new ManagementResultSet();
+            results.setResults(resultList);
+
+            return results;
+        }
+
+        return null;
+
+    }
+
+    public ManagementResultSet getOfficeSummary(String scopeName, String officeLocId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select officeLocId as officeLocId,\n");
+        sb.append("SUM(CASE WHEN a.isEligibleForVaccination = true THEN 1 ELSE 0 END) eligibleEmployees,\n");
+        sb.append("SUM(CASE WHEN ARRAY_LENGTH(a.vaccinationDetails) >= 1 THEN 1 ELSE 0 END) vaccinatedEmployees,\n");
+        sb.append("COUNT(*) as employees\n");
+        sb.append("FROM BackToWork.").append(scopeName).append(".employee a\n");
+        sb.append("WHERE officeLocId is not missing and officeLocId=\"").append(officeLocId).append("\"\n");
+        sb.append("GROUP BY officeLocId");
+
+        Cluster cluster = connMgr.getCluster();
+        if (cluster != null) {
+            QueryResult result = cluster.query(sb.toString());
+
+            List<ManagementResult> resultList = new ArrayList<>();
+            for (ManagementResult row : result.rowsAs(ManagementResult.class)) {
+                //System.out.println("Result = " + row.getOfficeLocId() + " " + row.getEmployees());
+                resultList.add(row);
+            }
+
+            ManagementResultSet results = new ManagementResultSet();
+            results.setResults(resultList);
+
+            return results;
+        }
+
+        return null;
+
+    }
 }

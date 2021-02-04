@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @EqualsAndHashCode
@@ -32,7 +33,7 @@ public class Employee {
     @Getter @Setter private String gender;
     //@Getter @Setter private Eligibility eligibility;
     private boolean isEligibleForVaccination;
-    @Getter @Setter private VaccinationDetail[] vaccinationDetails;
+    @Getter @Setter private List<VaccinationDetail> vaccinationDetails;
     @Getter @Setter private String officeLocId;
     @Getter @Setter private String employeeId;
     @Getter @Setter private String bloodGroup;
