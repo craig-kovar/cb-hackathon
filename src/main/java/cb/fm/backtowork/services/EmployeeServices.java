@@ -38,12 +38,14 @@ public class EmployeeServices {
                 List<VaccinationDetail> vcDetails = employee.getVaccinationDetails();
                 VaccinationDetail newVCDetails = new VaccinationDetail();
                 newVCDetails.setVaccinatedDate(vcDate);
+                if (vcDetails != null) {
+                    newVCDetails.setNumberOfDoses(vcDetails.size()+1);
+                } else {
+                    newVCDetails.setNumberOfDoses(1);
+                }
 
                 if (vcDetails == null) {
                     vcDetails = new ArrayList<>();
-                    newVCDetails.setNumberOfDoses(vcDetails.size() + 1);
-                } else {
-                    newVCDetails.setNumberOfDoses(1);
                 }
 
                 vcDetails.add(newVCDetails);
