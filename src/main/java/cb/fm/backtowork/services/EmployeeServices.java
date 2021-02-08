@@ -35,7 +35,6 @@ public class EmployeeServices {
         try {
             Employee employee = getEmployeeById(scope, id);
             if (employee != null) {
-                System.out.println("Employee is not null");
                 List<VaccinationDetail> vcDetails = employee.getVaccinationDetails();
                 VaccinationDetail newVCDetails = new VaccinationDetail();
                 newVCDetails.setVaccinatedDate(vcDate);

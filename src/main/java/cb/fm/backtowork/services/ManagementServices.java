@@ -183,7 +183,8 @@ public class ManagementServices {
         sb.append("COUNT(*) as employees\n");
         sb.append("FROM BackToWork.").append(scopeName).append(".employee a\n");
         sb.append("WHERE officeLocId is not missing\n");
-        sb.append("GROUP BY officeLocId");
+        sb.append("GROUP BY officeLocId\n");
+        sb.append("ORDER BY employees DESC, eligibleEmployees DESC, vaccinatedEmployees DESC\n");
 
         Cluster cluster = connMgr.getCluster();
         if (cluster != null) {
