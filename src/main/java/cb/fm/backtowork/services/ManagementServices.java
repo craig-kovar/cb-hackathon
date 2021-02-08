@@ -1,8 +1,6 @@
 package cb.fm.backtowork.services;
 
-import cb.fm.backtowork.entities.Employee;
-import cb.fm.backtowork.entities.ManagementResult;
-import cb.fm.backtowork.entities.ManagementResultSet;
+import cb.fm.backtowork.entities.*;
 import cb.fm.backtowork.repositories.EmployeeRepository;
 import cb.fm.backtowork.utils.ConnectionManager;
 import com.couchbase.client.java.Cluster;
@@ -13,9 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ManagementServices {
+
+    @Autowired EmployeeServices employeeServices;
 
     private ConnectionManager connMgr = ConnectionManager.getConnManager();
 
@@ -233,4 +234,54 @@ public class ManagementServices {
         return null;
 
     }
+
+    public ManagementListResult getEmployeeList(String scopeName, String officeLocId, String limit, String offset) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select RAW meta().id as emailId\n");
+        sb.append("FROM BackToWork.").append(scopeName).append(".employee\n");
+        sb.append("WHERE officeLocId is not missing and officeLocId=\"").append(officeLocId).append("\"\n");
+        if (limit != null)
+            sb.append("LIMIT ").append(limit).append("\n");
+        if (offset != null)
+            sb.append("OFFSET ").append(offset).append("\n");
+
+        //System.out.println(sb.toString());
+
+        Cluster cluster = connMgr.getCluster();
+        if (cluster != null) {
+            QueryResult result = cluster.query(sb.toString());
+
+            ManagementListResult resultList = new ManagementListResult();
+            for (String row : result.rowsAs(String.class)) {
+                //System.out.println("Result = " + row);
+                //resultList.add(row);
+                Employee employee = employeeServices.getEmployeeById(scopeName, row);
+                if (employee != null) {
+                    resultList.addEmployee(row);
+
+                    if (employee.getIsEligibleForVaccination())
+                        resultList.addEligibleEmployee(row);
+                    else
+                        resultList.addIneligibleEmployee(row);
+
+                    ManagementListVCDetail vcDetail = new ManagementListVCDetail();
+                    vcDetail.setEmail(row);
+                    if (employee.getVaccinationDetails() != null) {
+                        vcDetail.setNumDoses(employee.getVaccinationDetails().size());
+                    } else {
+                        vcDetail.setNumDoses(0);
+                    }
+
+                    resultList.addEmployeeVCDetails(vcDetail);
+                }
+
+            }
+
+            return resultList;
+        }
+
+        return null;
+
+    }
+
 }

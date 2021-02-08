@@ -1,6 +1,7 @@
 package cb.fm.backtowork.web;
 
 import cb.fm.backtowork.entities.Employee;
+import cb.fm.backtowork.entities.ManagementListResult;
 import cb.fm.backtowork.entities.ManagementResultSet;
 import cb.fm.backtowork.entities.RuleSet;
 import cb.fm.backtowork.services.EmployeeServices;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/management")
@@ -85,6 +88,17 @@ public class ManagementController {
     @RequestMapping(value = "/offices/{officeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ManagementResultSet> officesSummary(@RequestParam String scope, @PathVariable("officeId") String officeId) {
         return ResponseEntity.ok().body(managementServices.getOfficeSummary(scope,officeId));
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Employee List for office"),
+            @ApiResponse(code = 400, message = "Failed to retrieve Employee List for office")
+    })
+    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ManagementListResult> employeeList(@RequestParam("scope") String scope,
+                                                             @RequestParam("officeId") String officeId,
+                                                             @RequestParam(required = false) String limit,
+                                                             @RequestParam(required = false) String offset) {
+        return ResponseEntity.ok().body(managementServices.getEmployeeList(scope,officeId, limit, offset));
     }
 
 }
