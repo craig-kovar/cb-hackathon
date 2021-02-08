@@ -35,14 +35,18 @@ public class EmployeeServices {
         try {
             Employee employee = getEmployeeById(scope, id);
             if (employee != null) {
+                System.out.println("Employee is not null");
                 List<VaccinationDetail> vcDetails = employee.getVaccinationDetails();
                 VaccinationDetail newVCDetails = new VaccinationDetail();
                 newVCDetails.setVaccinatedDate(vcDate);
-                newVCDetails.setNumberOfDoses(vcDetails.size() + 1);
 
                 if (vcDetails == null) {
                     vcDetails = new ArrayList<>();
+                    newVCDetails.setNumberOfDoses(vcDetails.size() + 1);
+                } else {
+                    newVCDetails.setNumberOfDoses(1);
                 }
+
                 vcDetails.add(newVCDetails);
 
                 employee.setVaccinationDetails(vcDetails);
@@ -50,6 +54,7 @@ public class EmployeeServices {
                 return true;
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             return false;
         }
 
