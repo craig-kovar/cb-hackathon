@@ -93,7 +93,7 @@ public class ManagementController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved Employee List for office"),
             @ApiResponse(code = 400, message = "Failed to retrieve Employee List for office")
     })
-    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ManagementListResult> employeeList(@RequestParam("scope") String scope,
                                                              @RequestParam("officeId") String officeId,
                                                              @RequestParam(required = false) String limit,
