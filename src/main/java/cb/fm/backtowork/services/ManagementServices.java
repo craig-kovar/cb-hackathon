@@ -269,11 +269,9 @@ public class ManagementServices {
                     vcDetail.setEmail(row);
                     if (employee.getVaccinationDetails() != null) {
                         vcDetail.setNumDoses(employee.getVaccinationDetails().size());
-                    } else {
-                        vcDetail.setNumDoses(0);
+                        resultList.addEmployeeVCDetails(vcDetail);
                     }
 
-                    resultList.addEmployeeVCDetails(vcDetail);
                 }
 
             }
